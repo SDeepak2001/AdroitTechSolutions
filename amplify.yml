@@ -6,8 +6,10 @@ frontend:
         - npm ci --cache .npm --prefer-offline
     build:
       commands:
-        # Next 15 writes static site to ./out because of output:"export"
+        # Next 15 + output:"export" will write to ./out
         - npm run build
+        # Just in case Next didn't emit a 404, create a simple one for static hosting
+        - test -f out/404.html || echo "<!doctype html><title>404</title><h1>Not Found</h1>" > out/404.html
   artifacts:
     baseDirectory: out
     files:
