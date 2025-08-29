@@ -1,89 +1,106 @@
 "use client";
+
 import { useState } from "react";
-import { Mail, Phone, MapPin, CheckCircle2, AlertCircle } from "lucide-react";
+import { Mail, Phone, MapPin, X } from "lucide-react";
+
+/**
+ * 🔧 Set your links here:
+ * - CALENDLY_30: your 30-min event link (Event Type URL), add ?hide_gdpr_banner=1 for a clean embed
+ * - GOOGLE_FORM_EMBED: the Google Form "Embed" URL (submissions go to the linked Google Sheet)
+ *
+ * How to get GOOGLE_FORM_EMBED:
+ *  1) Create a Google Form → Responses → "Link to Sheets" (creates the spreadsheet)
+ *  2) Send (paper airplane) → <> Embed → copy the "src" URL (it looks like .../viewform?embedded=true)
+ */
+const CALENDLY_30 =
+  "https://calendly.com/deepaksde24/30min";
+const GOOGLE_FORM_EMBED =
+  "https://forms.gle/nNoNXHJuXT3CdNXB6"; // <-- replace with your form embed URL
 
 export default function Contact() {
-  const [sent, setSent] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [openCal, setOpenCal] = useState(false);
+  const [openForm, setOpenForm] = useState(false);
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setError(null); setSent(false); setLoading(true);
-    const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form).entries());
-    const payload = { ...data, ua: navigator.userAgent };
-
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const json = await res.json();
-      if (!res.ok || !json.ok) throw new Error(json.error || "Failed to send");
-      setSent(true);
-      form.reset();
-    } catch (err: any) {
-      setError(err.message || "Something went wrong");
-    } finally {
-      setLoading(false);
+  function openFormOrExplain() {
+    if (!GOOGLE_FORM_EMBED || GOOGLE_FORM_EMBED.includes("FORM_ID")) {
+      alert(
+        "Please set GOOGLE_FORM_EMBED in Contact.tsx to your Google Form embed URL (Send → <> Embed)."
+      );
+      return;
     }
+    setOpenForm(true);
   }
 
   return (
-    <section id="contact" className="bg-white border-top border-neutral-200">
+    <section id="contact" className="bg-white border-t border-neutral-200">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 py-20">
         <div className="max-w-3xl">
-          <h2 className="text-3xl font-extrabold tracking-tight text-neutral-900">Let’s build something</h2>
-          <p className="mt-2 text-neutral-600">Tell us about your project and timeline. We’ll reply within one business day.</p>
+          <h2 className="text-3xl font-extrabold tracking-tight text-neutral-900">
+            Let’s build something
+          </h2>
+          <p className="mt-2 text-neutral-600">
+            Book time instantly or share your project details. We usually
+            respond within one business day.
+          </p>
         </div>
 
-        {sent && (
-          <div className="mt-6 rounded-xl bg-emerald-50 text-emerald-900 border border-emerald-200 px-4 py-3 flex items-center gap-2 max-w-3xl">
-            <CheckCircle2 className="h-5 w-5" /> Thanks! Your message was sent.
-          </div>
-        )}
-        {error && (
-          <div className="mt-6 rounded-xl bg-rose-50 text-rose-900 border border-rose-200 px-4 py-3 flex items-center gap-2 max-w-3xl">
-            <AlertCircle className="h-5 w-5" /> {error}
-          </div>
-        )}
+        {/* CTAs */}
+        <div className="mt-8 flex flex-wrap gap-4">
+          <button
+            onClick={() => setOpenCal(true)}
+            className="rounded-full bg-[#0b2a35] text-white px-6 py-3 font-semibold hover:bg-[#0e3644]"
+          >
+            Book a 30-min intro call
+          </button>
 
-        <form onSubmit={onSubmit} className="mt-8 rounded-2xl border border-neutral-200 bg-neutral-50 p-6 shadow-sm">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="flex flex-col gap-2">
-              <label htmlFor="name" className="text-sm font-medium text-neutral-800">Your name*</label>
-              <input id="name" name="name" required className="h-12 rounded-xl bg-white border border-neutral-200 px-4 outline-none focus:border-sky-600 focus:ring-2 focus:ring-sky-100" />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="email" className="text-sm font-medium text-neutral-800">Email*</label>
-              <input id="email" name="email" type="email" required className="h-12 rounded-xl bg-white border border-neutral-200 px-4 outline-none focus:border-sky-600 focus:ring-2 focus:ring-sky-100" />
-            </div>
-            <div className="flex flex-col gap-2 md:col-span-2">
-              <label htmlFor="company" className="text-sm font-medium text-neutral-800">Company</label>
-              <input id="company" name="company" className="h-12 rounded-xl bg-white border border-neutral-200 px-4 outline-none focus:border-sky-600 focus:ring-2 focus:ring-sky-100" />
-            </div>
-            <div className="flex flex-col gap-2 md:col-span-2">
-              <label htmlFor="details" className="text-sm font-medium text-neutral-800">Project details*</label>
-              <textarea id="details" name="details" required rows={6} className="rounded-xl bg-white border border-neutral-200 px-4 py-3 outline-none focus:border-sky-600 focus:ring-2 focus:ring-sky-100" />
-            </div>
-          </div>
-
-          <div className="mt-6 flex flex-col-reverse sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
-            <p className="text-sm text-neutral-500">We’ll never share your email. By submitting, you agree we can contact you about this inquiry.</p>
-            <button disabled={loading} type="submit" className="rounded-full bg-[#0b2a35] text-white px-6 py-3 font-semibold hover:bg-[#0e3644] disabled:opacity-60">
-              {loading ? "Sending…" : "Send inquiry"}
-            </button>
-          </div>
-        </form>
-
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6 text-neutral-700">
-          <div className="flex items-center gap-3"><Mail size={18}/> hr@adroittechsolutions.com</div>
-          <div className="flex items-center gap-3"><Phone size={18}/> +1 (503) 567-9964</div>
-          <div className="flex items-center gap-3"><MapPin size={18}/> Portland, OR</div>
+          <button
+            onClick={openFormOrExplain}
+            className="rounded-full border border-neutral-300 text-neutral-800 px-6 py-3 font-semibold hover:bg-neutral-50"
+          >
+            Contact Us
+          </button>
         </div>
       </div>
+
+      {/* Calendly modal */}
+      {openCal && (
+        <div className="fixed inset-0 z-[60] bg-black/60 flex items-center justify-center p-4">
+          <div className="relative w-full max-w-3xl aspect-[16/10] bg-white rounded-2xl overflow-hidden shadow-2xl">
+            <button
+              aria-label="Close"
+              onClick={() => setOpenCal(false)}
+              className="absolute top-3 right-3 z-10 rounded-full bg-black/70 text-white p-1.5 hover:bg-black"
+            >
+              <X size={18} />
+            </button>
+            <iframe
+              title="Calendly — 30-min intro"
+              src={CALENDLY_30}
+              className="absolute inset-0 w-full h-full"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Google Form modal (writes to your linked Google Sheet) */}
+      {openForm && (
+        <div className="fixed inset-0 z-[60] bg-black/60 flex items-center justify-center p-4">
+          <div className="relative w-full max-w-3xl aspect-[16/12] bg-white rounded-2xl overflow-hidden shadow-2xl">
+            <button
+              aria-label="Close"
+              onClick={() => setOpenForm(false)}
+              className="absolute top-3 right-3 z-10 rounded-full bg-black/70 text-white p-1.5 hover:bg-black"
+            >
+              <X size={18} />
+            </button>
+            <iframe
+              title="Contact Us — Project details"
+              src={GOOGLE_FORM_EMBED}
+              className="absolute inset-0 w-full h-full"
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
