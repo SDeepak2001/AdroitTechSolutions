@@ -1,5 +1,4 @@
 import Hero from "@/components/sections/Hero";
-import StatsRibbon from "@/components/StatsRibbon";
 import Services from "@/components/sections/Services";
 import About from "@/components/sections/About";
 import CalloutBand from "@/components/CalloutBand";
