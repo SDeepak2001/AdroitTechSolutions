@@ -1,30 +1,51 @@
+// components/Navbar.tsx
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 
 type NavItem = { href: string; label: string };
 
 const MAIN_NAV: NavItem[] = [
   { href: "/", label: "Home" },
-  { href: "/#services", label: "Services" },
+  { href: "/services", label: "Services" },
   { href: "/blogs", label: "Blogs" },
-  { href: "/#about", label: "About Us" },
+  { href: "/about", label: "About Us" },
   { href: "/careers", label: "Careers" },
-  // keep only the yellow CTA for Contact
 ];
 
 export default function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 6);
+    onScroll();
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const close = () => setMobileOpen(false);
+    window.addEventListener("hashchange", close);
+    return () => window.removeEventListener("hashchange", close);
+  }, []);
+
   return (
-    <header className="fixed top-0 left-0 w-full z-50 border-b bg-[#0b2a35] border-[#0f3a49]">
+    <header
+      className={[
+        "fixed top-0 left-0 w-full z-50 border-b transition-colors",
+        scrolled
+          ? "backdrop-blur bg-[#0b2a35]/90 border-[#0f3a49]"
+          : "bg-[#0b2a35] border-transparent",
+      ].join(" ")}
+    >
       <div className="mx-auto max-w-7xl px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
           <Image
-            src="/logo.png"
+            src="/logo_white.png" // ✅ new logo
             alt="Adroit Tech Solutions"
             width={160}
             height={48}
@@ -40,7 +61,7 @@ export default function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className="nav-link relative text-[18px] font-semibold text-teal-100/85 hover:text-white"
+              className="relative text-[18px] font-semibold text-teal-100/85 hover:text-white after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#FFD54A] after:transition-all hover:after:w-full"
             >
               {item.label}
             </Link>
@@ -50,7 +71,7 @@ export default function Navbar() {
         {/* CTA + mobile trigger */}
         <div className="flex items-center gap-3">
           <Link
-            href="/#contact"
+            href="/contact"
             className="hidden md:inline-flex rounded-full bg-[#FFD54A] text-[#0b2a35] px-6 py-2.5 text-[18px] font-bold shadow-sm hover:brightness-95"
           >
             Contact Us
@@ -81,7 +102,7 @@ export default function Navbar() {
                 </Link>
               ))}
               <Link
-                href="/#contact"
+                href="/contact"
                 className="mt-2 inline-flex justify-center rounded-full bg-[#FFD54A] text-[#0b2a35] px-5 py-2.5 text-[17px] font-bold shadow-sm hover:brightness-95"
                 onClick={() => setMobileOpen(false)}
               >

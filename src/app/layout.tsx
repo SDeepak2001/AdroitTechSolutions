@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -17,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Adroit Tech Solutions",
-  description: "Cloud & Product Engineering that delivers",
+  description: "Cloud, data & product engineering that delivers measurable outcomes.",
 };
 
 export default function RootLayout({
@@ -28,10 +27,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-slate-50 text-slate-900 antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} bg-white text-neutral-900 antialiased`}
       >
+        {/* Global navbar */}
         <Navbar />
-        {children}
+        {/* Offset for sticky navbar */}
+        <main className="pt-16">{children}</main>
+        {/* Global footer */}
         <Footer />
       </body>
     </html>

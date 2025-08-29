@@ -1,95 +1,119 @@
-// src/components/sections/Services.tsx
 "use client";
-import { motion, useMotionValue, useTransform } from "framer-motion";
-import { Layers, Cloud, ShieldCheck, Rocket } from "lucide-react";
-import { useCallback } from "react";
 
-type CardProps = {
-  icon: React.ReactNode;
+import Link from "next/link";
+import {
+  Brain,
+  LineChart,
+  Cloud,
+  Layers,
+  ShieldCheck,
+  Smartphone,
+} from "lucide-react";
+import { motion } from "framer-motion";
+
+type Service = {
+  slug: string;
   title: string;
-  brief: string;
-  details: string;
+  desc: string;
+  icon: React.ReactNode;
+  glowFrom: string;
+  glowTo: string;
 };
 
-function InteractiveCard({ icon, title, brief, details }: CardProps) {
-  // subtle 3D tilt on hover
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useTransform(y, [-50, 50], [8, -8]);
-  const rotateY = useTransform(x, [-50, 50], [-8, 8]);
-
-  const onMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const px = e.clientX - rect.left - rect.width / 2;
-    const py = e.clientY - rect.top - rect.height / 2;
-    x.set(px / 4);
-    y.set(py / 4);
-  }, [x, y]);
-
-  return (
-    <motion.div
-      onMouseMove={onMove}
-      onMouseLeave={() => { x.set(0); y.set(0); }}
-      style={{ rotateX, rotateY }}
-      className="group relative rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm will-change-transform
-                 hover:shadow-xl transition-shadow"
-    >
-      {/* Glow border on hover */}
-      <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-transparent
-                      group-hover:ring-[#00E5A8]/30 group-hover:shadow-[0_0_0_6px_rgba(0,229,168,0.08)] transition" />
-
-      <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-[#19B5FE]/20 to-[#00E5A8]/20 flex items-center justify-center mb-4">
-        {icon}
-      </div>
-      <h3 className="font-semibold text-neutral-900">{title}</h3>
-      <p className="mt-2 text-neutral-600 text-sm leading-relaxed">{brief}</p>
-
-      {/* Reveal panel on hover */}
-      <div className="mt-4">
-        <div className="h-[1px] w-10 bg-gradient-to-r from-[#19B5FE] to-[#00E5A8] rounded-full" />
-      </div>
-      <div className="mt-3 text-sm text-neutral-700 opacity-0 max-h-0 overflow-hidden
-                      group-hover:opacity-100 group-hover:max-h-40 transition-all duration-300">
-        {details}
-      </div>
-    </motion.div>
-  );
-}
+const services: Service[] = [
+  {
+    slug: "consulting",
+    title: "IT Consulting & Strategy",
+    desc:
+      "Roadmaps, architecture reviews, cost optimization, and program delivery. We align technology with business outcomes.",
+    icon: <LineChart className="h-6 w-6" />,
+    glowFrom: "from-sky-400/30",
+    glowTo: "to-cyan-300/30",
+  },
+  {
+    slug: "ai",
+    title: "AI & Machine Learning",
+    desc:
+      "GenAI apps, model selection, MLOps, and data pipelines. From prompt engineering to production-grade inference.",
+    icon: <Brain className="h-6 w-6" />,
+    glowFrom: "from-fuchsia-400/30",
+    glowTo: "to-pink-300/30",
+  },
+  {
+    slug: "cloud",
+    title: "Cloud & DevOps",
+    desc:
+      "IaC with Terraform, CI/CD, container orchestration, observability, and SRE practices across AWS and beyond.",
+    icon: <Cloud className="h-6 w-6" />,
+    glowFrom: "from-emerald-400/30",
+    glowTo: "to-teal-300/30",
+  },
+  {
+    slug: "backend",
+    title: "Backend & APIs",
+    desc:
+      "Microservices, REST/GraphQL, event-driven systems, and scalable datastores tuned for reliability and speed.",
+    icon: <Layers className="h-6 w-6" />,
+    glowFrom: "from-cyan-400/30",
+    glowTo: "to-sky-300/30",
+  },
+  {
+    slug: "security",
+    title: "Security & Compliance",
+    desc:
+      "Least-privilege IAM, network isolation, encryption, audit logging, and readiness for SOC2/ISO27001.",
+    icon: <ShieldCheck className="h-15 w-6" />,
+    glowFrom: "from-rose-400/30",
+    glowTo: "to-orange-300/30",
+  },
+  {
+    slug: "apps",
+    title: "Web & Mobile Apps",
+    desc:
+      "Modern, accessible interfaces with React/Next.js and performant APIs — designed for usability and scale.",
+    icon: <Smartphone className="h-15 w-6" />,
+    glowFrom: "from-amber-400/30",
+    glowTo: "to-yellow-300/30",
+  },
+];
 
 export default function Services() {
   return (
-    <section id="services" className="bg-white">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8 py-20">
-        <h2 className="text-3xl font-extrabold tracking-tight text-neutral-900">Services</h2>
-        <p className="mt-2 text-neutral-600 max-w-2xl">
-          From strategy to production: architecture, implementation, automation, and SLOs.
+    <section id="services" className="relative bg-[#0b2a35] text-white py-24 overflow-hidden">
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+        <h2 className="text-center text-4xl font-extrabold tracking-tight">Our Services</h2>
+        <p className="mt-3 text-center text-teal-100/90 max-w-3xl mx-auto">
+          Consulting with clarity. Services with impact. From AI and cloud to infrastructure and
+          security, we guide you end-to-end in your IT journey.
         </p>
 
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <InteractiveCard
-            icon={<Layers className="h-5 w-5" />}
-            title="Backend & APIs"
-            brief="Microservices, REST/GraphQL, async messaging, and data stores tuned for scale."
-            details="We design domain-driven services with observability, retries, idempotency, and safe deployments (blue/green, canary)."
-          />
-          <InteractiveCard
-            icon={<Cloud className="h-5 w-5" />}
-            title="Cloud & DevOps"
-            brief="IaC with Terraform, CI/CD, and end-to-end observability on AWS."
-            details="ECS/EKS/Lambda, S3, DynamoDB, RDS, CloudFront. Pipelines on GitHub Actions with drift detection and cost visibility."
-          />
-          <InteractiveCard
-            icon={<ShieldCheck className="h-5 w-5" />}
-            title="Security"
-            brief="Least-privilege IAM, VPC isolation, encryption, audit logging."
-            details="Threat modeling, secret management, posture hardening, and privacy by design with routine security reviews."
-          />
-          <InteractiveCard
-            icon={<Rocket className="h-5 w-5" />}
-            title="Web UI"
-            brief="Fast, elegant interfaces with React + Tailwind."
-            details="Design systems, accessibility, performance budgets, SSR/ISR, and analytics-instrumented product surfaces."
-          />
+        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {services.map((s, idx) => (
+            <Link key={s.slug} href={`/services/${s.slug}`} className="block group">
+              <motion.article
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.35, delay: idx * 0.05 }}
+                whileHover={{ translateY: -6 }}
+                className="relative rounded-2xl border border-white/10 bg-[#0f2630]/80 backdrop-blur-sm p-6 shadow-[0_8px_28px_rgba(0,0,0,0.25)]"
+              >
+                {/* Icon + spotlight glow */}
+                <div className="relative mb-4">
+                  <div
+                    className={`pointer-events-none absolute -inset-2 rounded-xl blur-xl opacity-70 transition-all duration-300 group-hover:opacity-100 group-hover:-inset-3 bg-gradient-to-br ${s.glowFrom} ${s.glowTo}`}
+                  />
+                  <div className="relative inline-grid h-12 w-12 place-items-center rounded-xl border border-white/10 bg-[#0b2230] text-white">
+                    {s.icon}
+                  </div>
+                </div>
+
+                <h3 className="text-lg font-semibold">{s.title}</h3>
+                <p className="mt-2 text-sm text-teal-100/85 leading-relaxed">{s.desc}</p>
+                <div className="mt-5 h-[3px] w-0 rounded-full bg-gradient-to-r from-cyan-400 to-emerald-400 transition-all duration-300 group-hover:w-2/5" />
+              </motion.article>
+            </Link>
+          ))}
         </div>
       </div>
     </section>

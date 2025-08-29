@@ -77,8 +77,7 @@ export default function Hero() {
         </h1>
 
         <p className="mt-6 max-w-2xl text-lg text-teal-100/90">
-          We help companies move from idea to impact: secure, scalable platforms on AWS — 
-          microservices, data pipelines, and modern frontends.
+          Your business vision, our technology expertise — full-spectrum IT consulting and services that turn complexity into opportunity.
         </p>
 
         <div className="mt-9 flex flex-wrap gap-4">
