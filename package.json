@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "dev": "next dev",
+    "build": "next build",              // Amplify calls this
+    "build:static": "next build",       // optional alias
     "start": "next start",
     "lint": "eslint"
   },
@@ -28,8 +29,7 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
-  "scripts": {
-    "build:static": "next build"
+  "engines": {
+    "node": ">=20"
   }
 }
-
