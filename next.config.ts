@@ -1,9 +1,9 @@
+// next.config.ts
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  output: "export",          // writes static site to ./out
-  images: { unoptimized: true },
-  trailingSlash: true
+const config: NextConfig = {
+  output: "export",          // produce /out for static hosting
+  images: { unoptimized: true }, // allow Next <Image> on static hosts
 };
 
-export default nextConfig;
+export default config;
