@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",              // Amplify calls this
-    "build:static": "next build",       // optional alias
+    "build": "next build",              
+    "build:static": "next build",  
     "start": "next start",
     "lint": "eslint"
   },
